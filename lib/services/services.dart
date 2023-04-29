@@ -1,0 +1,1 @@
+export 'package:tacafe/services/auth_service.dart';
