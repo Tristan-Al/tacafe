@@ -1,6 +1,11 @@
-export 'package:tacafe/pages/login_page.dart';
-export 'package:tacafe/pages/auth_page.dart';
-export 'package:tacafe/pages/home_page.dart';
-export 'package:tacafe/pages/register_page.dart';
-export 'package:tacafe/pages/forgot_password_page.dart';
+export 'package:tacafe/pages/login/login_page.dart';
+export 'package:tacafe/pages/login/auth_page.dart';
+export 'package:tacafe/pages/home/home_page.dart';
+export 'package:tacafe/pages/login/register_page.dart';
+export 'package:tacafe/pages/login/forgot_password_page.dart';
 export 'package:tacafe/pages/error_page.dart';
+export 'package:tacafe/pages/home/main_page.dart';
+export 'package:tacafe/pages/product/product_detail_page.dart';
+export 'package:tacafe/pages/home/cart_page.dart';
+export 'package:tacafe/pages/home/favourite_page.dart';
+export 'package:tacafe/pages/home/profile_page.dart';

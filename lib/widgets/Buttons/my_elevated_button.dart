@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MyElevatedButton extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final double? width;
-  final double height;
+  final double? height;
   final Gradient gradient;
   final VoidCallback? onPressed;
   final Widget child;
@@ -14,8 +14,9 @@ class MyElevatedButton extends StatelessWidget {
     required this.child,
     this.borderRadius,
     this.width,
-    this.height = 45,
-    this.gradient = const LinearGradient(colors: [Color(0xFFCB8A58), Color(0xFF562B1A)]),
+    this.height,
+    this.gradient =
+        const LinearGradient(colors: [Color(0xFFCB8A58), Color(0xFF562B1A)]),
   }) : super(key: key);
 
   @override

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tacafe/pages/pages.dart';
 import 'package:tacafe/services/services.dart';
 import 'package:tacafe/widgets/widgets.dart';
 import 'package:tacafe/theme/app_theme.dart';
@@ -9,7 +11,7 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HFTemplate( body: _Body() );
+    return HFTemplate(body: _Body());
   }
 }
 
@@ -19,10 +21,11 @@ class _Body extends StatefulWidget {
 }
 
 class _BodyState extends State<_Body> {
-
   final myFormKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
+  final nameController = TextEditingController();
+  final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -32,9 +35,12 @@ class _BodyState extends State<_Body> {
     FocusScope.of(context).unfocus();
     // show loading circle
     showDialog(
-      context: context, 
-      builder: ((context) => const Center(child: CircularProgressIndicator( color: AppTheme.lightBrown,),))
-    );
+        context: context,
+        builder: ((context) => const Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.lightBrown,
+              ),
+            )));
 
     if (!myFormKey.currentState!.validate()) {
       //removes loading circle
@@ -43,15 +49,26 @@ class _BodyState extends State<_Body> {
       //try to sign up
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, 
+          email: emailController.text,
           password: passwordController.text,
         );
+
+        // Add user address
+        await FirebaseFirestore.instance.collection('users').add({
+          'email': emailController.text.trim(),
+          'name': nameController.text.trim(),
+          'address': addressController.text.trim(),
+        });
+
         Navigator.pop(context);
         //Go to home page
-        Navigator.pushReplacementNamed(context, 'home');
-
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
       } on FirebaseAuthException catch (e) {
-
         Navigator.pop(context);
         switch (e.code) {
           case 'email-already-in-use':
@@ -73,23 +90,20 @@ class _BodyState extends State<_Body> {
     }
   }
 
-  void _showErrorMessage( String message ) {
+  void _showErrorMessage(String message) {
     showDialog(
-      context: context, 
-      builder: (context) {
-        return AlertDialog(
-          title: Text(message),
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(message),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 80, top: 150),
-      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 60, top: 90),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,8 +111,12 @@ class _BodyState extends State<_Body> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              HeaderText(text: 'Sign Up',),
-              LightText(text: 'Let\'s create an account!',),
+              HeaderText(
+                text: 'Sign Up',
+              ),
+              LightText(
+                text: 'Let\'s create an account!',
+              ),
             ],
           ),
           Form(
@@ -109,17 +127,37 @@ class _BodyState extends State<_Body> {
                 MyTextFormField(
                   controller: emailController,
                   validator: MyTextFormValidators.emailValidator,
-                  labelText: 'Email', 
+                  labelText: 'Email',
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 15,
+                ),
+                MyTextFormField(
+                  controller: nameController,
+                  validator: MyTextFormValidators.basicValidator,
+                  labelText: 'Name',
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                MyTextFormField(
+                  controller: addressController,
+                  validator: MyTextFormValidators.basicValidator,
+                  labelText: 'Address',
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
                 MyTextFormField(
                   controller: passwordController,
                   validator: MyTextFormValidators.passwordValidator,
-                  labelText: 'Password', 
+                  labelText: 'Password',
                   obscureText: true,
                   keyboardType: TextInputType.emailAddress,
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 15,
+                ),
                 MyTextFormField(
                   controller: confirmPasswordController,
                   validator: (value) {
@@ -131,7 +169,7 @@ class _BodyState extends State<_Body> {
                     }
                     return null;
                   },
-                  labelText: 'Confirm Password', 
+                  labelText: 'Confirm Password',
                   obscureText: true,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -140,49 +178,25 @@ class _BodyState extends State<_Body> {
           ),
           MyElevatedButton(
             onPressed: signUserUp,
-            width: double.infinity, 
+            width: double.infinity,
             borderRadius: BorderRadius.circular(10),
-            child: const LightText(text: 'Sign Up', color: AppTheme.white,),
-          ),
-          Row(
-            children: const [
-              Expanded(
-                child: Divider(
-                  thickness: 0.5,
-                  color: AppTheme.grey,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: LightText(text: 'Or continue with', fontSize: 15,),
-              ),
-              Expanded(
-                child: Divider(
-                  thickness: 0.5,
-                  color: AppTheme.grey,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SquareCard(
-                imagePath: 'assets/google.png',
-                onTap: () => AuthService().signInWithGoogle(),
-              ),
-              const SizedBox( width: 10,),
-              SquareCard(
-                imagePath: 'assets/apple.png',
-                onTap: () {},
-              ),
-            ],
+            child: const LightText(
+              text: 'Sign Up',
+              color: AppTheme.white,
+            ),
           ),
           Row(
             children: [
-              const LightText(text: 'Already have an account? ', fontSize: 15,),
+              const LightText(
+                text: 'Already have an account? ',
+                fontSize: 15,
+              ),
               GestureDetector(
-                child: const Text("Login", style: TextStyle( color: AppTheme.brown, fontWeight: FontWeight.bold),),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                      color: AppTheme.darkBrown, fontWeight: FontWeight.bold),
+                ),
                 onTap: () => Navigator.pop(context),
               )
             ],

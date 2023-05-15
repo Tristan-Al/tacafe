@@ -8,6 +8,7 @@ class MyTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool? obscureText;
   final String? Function(String?)? validator;
+  final double borderRadius;
 
   const MyTextFormField({
     super.key,
@@ -16,7 +17,8 @@ class MyTextFormField extends StatelessWidget {
     this.icon,
     this.keyboardType,
     this.obscureText, 
-    this.validator,
+    this.validator, 
+    this.borderRadius = 10,
   });
 
   @override
@@ -27,10 +29,21 @@ class MyTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText ?? false,
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: labelText,
-        suffixIcon: Icon(icon),
+        prefixIcon: icon != null ? Icon(icon) : null,
+        enabledBorder : OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        ),
       ),
     );
   }

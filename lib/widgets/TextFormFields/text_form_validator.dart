@@ -1,4 +1,10 @@
 class MyTextFormValidators {
+  static String? Function(String?)? basicValidator = (value) {
+    if (value!.isEmpty) {
+      return 'Field required';
+    }
+    return null;
+  };
 
   static String? Function(String?)? emailValidator = (value) {
     String pattern =

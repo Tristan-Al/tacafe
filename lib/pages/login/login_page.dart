@@ -10,11 +10,9 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HFTemplate( body: _Body() );
+    return HFTemplate(body: _Body());
   }
 }
-
-
 
 class _Body extends StatefulWidget {
   @override
@@ -34,18 +32,21 @@ class _BodyState extends State<_Body> {
 
     // show loading circle
     showDialog(
-      context: context, 
-      builder: ((context) => const Center(child: CircularProgressIndicator( color: AppTheme.lightBrown,),))
-    );
+        context: context,
+        builder: ((context) => const Center(
+              child: CircularProgressIndicator(
+                color: AppTheme.lightBrown,
+              ),
+            )));
 
-    if (!myFormKey.currentState!.validate()) { 
+    if (!myFormKey.currentState!.validate()) {
       //removes loading circle
       Navigator.pop(context);
     } else {
       //try to sign in
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, 
+          email: emailController.text,
           password: passwordController.text,
         );
         Navigator.pop(context);
@@ -71,21 +72,20 @@ class _BodyState extends State<_Body> {
     }
   }
 
-  void _showErrorMessage( String message ) {
+  void _showErrorMessage(String message) {
     showDialog(
-      context: context, 
-      builder: (context) {
-        return AlertDialog(
-          title: Text(message),
-        );
-      }
-    );
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(message),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 80, top: 150),
+      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 80, top: 160),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,8 +93,12 @@ class _BodyState extends State<_Body> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              HeaderText(text: 'Welcome back!',),
-              LightText(text: 'Login to your account.',),
+              HeaderText(
+                text: 'Welcome back!',
+              ),
+              LightText(
+                text: 'Login to your account.',
+              ),
             ],
           ),
           Form(
@@ -105,21 +109,32 @@ class _BodyState extends State<_Body> {
                 MyTextFormField(
                   controller: emailController,
                   validator: MyTextFormValidators.emailValidator,
-                  labelText: 'Email', 
+                  labelText: 'Email',
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 MyTextFormField(
                   controller: passwordController,
                   validator: MyTextFormValidators.passwordValidator,
-                  labelText: 'Password', 
+                  labelText: 'Password',
                   obscureText: true,
                   keyboardType: TextInputType.emailAddress,
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 GestureDetector(
-                  child: const LightText(text: 'Forgot password?', fontSize: 15, color: AppTheme.brown,),
+                  child: const LightText(
+                    text: 'Forgot password?',
+                    fontSize: 15,
+                    color: AppTheme.darkBrown,
+                  ),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) { return ForgotPasswordPage();}));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ForgotPasswordPage();
+                    }));
                   },
                 ),
               ],
@@ -127,9 +142,12 @@ class _BodyState extends State<_Body> {
           ),
           MyElevatedButton(
             onPressed: signUserIn,
-            width: double.infinity, 
+            width: double.infinity,
             borderRadius: BorderRadius.circular(10),
-            child: const LightText(text: 'Sign In', color: AppTheme.white,),
+            child: const LightText(
+              text: 'Sign In',
+              color: AppTheme.white,
+            ),
           ),
           Row(
             children: const [
@@ -141,7 +159,10 @@ class _BodyState extends State<_Body> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: LightText(text: 'Or continue with', fontSize: 15,),
+                child: LightText(
+                  text: 'Or continue with',
+                  fontSize: 15,
+                ),
               ),
               Expanded(
                 child: Divider(
@@ -158,19 +179,34 @@ class _BodyState extends State<_Body> {
                 imagePath: 'assets/google.png',
                 onTap: () => AuthService().signInWithGoogle(),
               ),
-              const SizedBox( width: 10,),
+              const SizedBox(
+                width: 10,
+              ),
               SquareCard(
                 imagePath: 'assets/apple.png',
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) { return const ErrorPage();})),
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const ErrorPage();
+                })),
               ),
             ],
           ),
           Row(
             children: [
-              const LightText(text: 'You don\'t have an account yet? ', fontSize: 15,),
+              const LightText(
+                text: 'You don\'t have an account yet? ',
+                fontSize: 15,
+              ),
               GestureDetector(
-                child: const Text("Register", style: TextStyle( color: AppTheme.brown, fontWeight: FontWeight.bold),),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) { return RegisterPage();})),
+                child: const Text(
+                  "Register",
+                  style: TextStyle(
+                      color: AppTheme.darkBrown, fontWeight: FontWeight.bold),
+                ),
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return RegisterPage();
+                })),
               )
             ],
           )
