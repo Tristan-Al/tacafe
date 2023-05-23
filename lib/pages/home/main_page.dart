@@ -9,8 +9,10 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+int selectedIndex =
+    0; // Index which is globally accessible throughtout your project
+
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
   static final List<Widget> _pages = <Widget>[
     HomePage(),
     FavouritePage(),
@@ -18,9 +20,14 @@ class _MainPageState extends State<MainPage> {
     ProfilePage(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
@@ -29,7 +36,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: AppTheme.white,
       body: IndexedStack(
-        index: _selectedIndex,
+        index: selectedIndex,
         children: _pages,
       ),
       bottomNavigationBar: Container(
@@ -55,11 +62,11 @@ class _MainPageState extends State<MainPage> {
               label: 'Cart',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: 'Profile',
+              icon: Icon(Icons.person),
+              label: 'Account',
             ),
           ],
-          currentIndex: _selectedIndex,
+          currentIndex: selectedIndex,
           onTap: _onItemTapped,
         ),
       ),

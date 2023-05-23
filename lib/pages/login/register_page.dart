@@ -48,16 +48,21 @@ class _BodyState extends State<_Body> {
     } else {
       //try to sign up
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
-        );
-
-        // Add user address
-        await FirebaseFirestore.instance.collection('users').add({
-          'email': emailController.text.trim(),
-          'name': nameController.text.trim(),
-          'address': addressController.text.trim(),
+        )
+            .then((result) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(result.user!.uid)
+              .set({
+            'email': emailController.text.trim(),
+            'name': nameController.text.trim(),
+            'address': addressController.text.trim(),
+            'cart': [],
+          });
         });
 
         Navigator.pop(context);

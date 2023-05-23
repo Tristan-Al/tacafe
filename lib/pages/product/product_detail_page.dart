@@ -1,17 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:tacafe/models/models.dart';
+import 'package:tacafe/pages/pages.dart';
+import 'package:tacafe/services/services.dart';
 import 'package:tacafe/theme/app_theme.dart';
 import 'package:tacafe/widgets/Buttons/my_icon_button.dart';
 import 'package:tacafe/widgets/widgets.dart';
 
 class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key});
+  final Product product;
+  const ProductDetailPage({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     double imgHeight = MediaQuery.of(context).size.height / 2.2;
     return Scaffold(
       backgroundColor: AppTheme.white,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: MediaQuery.of(context).size.height,
         child: Stack(
@@ -20,12 +27,14 @@ class ProductDetailPage extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 height: imgHeight,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        'https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1500w,f_auto,q_auto:best/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                decoration: BoxDecoration(
+                  image: product.image == null
+                      ? const DecorationImage(
+                          image: AssetImage('assets/no-image.jpg'),
+                          fit: BoxFit.cover)
+                      : DecorationImage(
+                          image: NetworkImage(product.image!),
+                          fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -55,8 +64,8 @@ class ProductDetailPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const LightText(
-                      text: 'Cappuccino',
+                    LightText(
+                      text: product.name,
                       color: AppTheme.white,
                       fontSize: 25,
                     ),
@@ -65,6 +74,7 @@ class ProductDetailPage extends StatelessWidget {
                       backgroundColor: AppTheme.brown,
                       textColor: AppTheme.white,
                       borderColor: AppTheme.brown,
+                      onTap: () {},
                     ),
                   ],
                 ),
@@ -84,7 +94,7 @@ class ProductDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HeaderText(
+                    const HeaderText(
                       text: 'Coffe Size',
                       color: AppTheme.black,
                       fontSize: 22,
@@ -101,6 +111,7 @@ class ProductDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 25, vertical: 10),
                           fontSize: 15,
+                          onTap: () {},
                         ),
                         const SizedBox(
                           width: 5,
@@ -111,6 +122,7 @@ class ProductDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 25, vertical: 10),
                           fontSize: 15,
+                          onTap: () {},
                         ),
                         const SizedBox(
                           width: 5,
@@ -121,19 +133,19 @@ class ProductDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 25, vertical: 10),
                           fontSize: 15,
+                          onTap: () {},
                         ),
                       ],
                     ),
                     const SizedBox(height: 15),
-                    HeaderText(
+                    const HeaderText(
                       text: 'About',
                       color: AppTheme.black,
                       fontSize: 22,
                     ),
                     const SizedBox(height: 10),
                     LightText(
-                      text:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id ipsum vivamus velit lorem amet. Tincidunt cras volutpat aliquam porttitor molestie. Netus neque, habitasse id vulputate proin cras. Neque, vel duis sit vel pellentesque tempor. A commodo arcu tortor arcu, elit. ',
+                      text: product.description,
                       fontSize: 15,
                       textAlign: TextAlign.start,
                       color: AppTheme.darkBrown,
@@ -156,21 +168,75 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        LightText(
+                      children: [
+                        const LightText(
                           text: 'Add to Cart',
                           fontSize: 25,
                           color: AppTheme.white,
                         ),
                         LightText(
-                          text: '|    3 \$',
+                          text: '|    ${product.price} \$',
                           fontSize: 25,
                           color: AppTheme.white,
                         ),
                       ],
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // show loading circle
+                    showDialog(
+                        context: context,
+                        builder: ((context) => const Center(
+                              child: CircularProgressIndicator(
+                                color: AppTheme.lightBrown,
+                              ),
+                            )));
+                    ProductService.incrementProductToCard(product.id!)
+                        .then((value) {
+                      Navigator.pop(context);
+
+                      final snackBar = SnackBar(
+                        content: const Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text('Product added to cart!'),
+                        ),
+                        duration: const Duration(milliseconds: 2000),
+                        action: SnackBarAction(
+                          label: 'Go to cart',
+                          onPressed: () {
+                            selectedIndex = 2;
+                            //Go to home page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MainPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+
+//Go to home page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MainPage(),
+                        ),
+                      );
+                      // Find the ScaffoldMessenger in the widget tree
+                      // and use it to show a SnackBar.
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }).onError((error, stackTrace) {
+                      Navigator.pop(context);
+                      // show loading circle
+                      showDialog(
+                          context: context,
+                          builder: ((context) => Center(
+                                  child: Center(
+                                child: LightText(text: error.toString()),
+                              ))));
+                    });
+                  },
                 ))
           ],
         ),

@@ -8,4 +8,5 @@ export 'package:tacafe/pages/home/main_page.dart';
 export 'package:tacafe/pages/product/product_detail_page.dart';
 export 'package:tacafe/pages/home/cart_page.dart';
 export 'package:tacafe/pages/home/favourite_page.dart';
-export 'package:tacafe/pages/home/profile_page.dart';
+export 'package:tacafe/pages/home/account_page.dart';
+export 'package:tacafe/pages/account/edit_profile_page.dart';

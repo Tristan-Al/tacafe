@@ -9,48 +9,51 @@ class AppTheme {
   static const Color grey = Color(0xFF8F9698);
 
   static final ThemeData lightTheme = ThemeData(
-      colorScheme: const ColorScheme(
-          brightness: Brightness.light,
-          primary: darkBrown,
-          onPrimary: white,
-          secondary: lightBrown,
-          onSecondary: darkBrown,
-          error: Colors.red,
-          onError: black,
-          background: white,
-          onBackground: darkBrown,
-          surface: white,
-          onSurface: darkBrown),
-      fontFamily: 'Raleway',
-      inputDecorationTheme: const InputDecorationTheme(
-        labelStyle: TextStyle(color: grey),
-        iconColor: grey,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: darkBrown),
-        ),
-        errorBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+    scaffoldBackgroundColor: AppTheme.white,
+    colorScheme: const ColorScheme(
+        brightness: Brightness.light,
+        primary: darkBrown,
+        onPrimary: white,
+        secondary: lightBrown,
+        onSecondary: darkBrown,
+        error: Colors.red,
+        onError: black,
+        background: white,
+        onBackground: darkBrown,
+        surface: white,
+        onSurface: darkBrown),
+    fontFamily: 'Raleway',
+    inputDecorationTheme: const InputDecorationTheme(
+      labelStyle: TextStyle(color: grey),
+      iconColor: grey,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: grey),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-            // minimumSize: const Size.fromHeight(50),
-            // textStyle: TextStyle( color: black ),
-            // backgroundColor: lightBrown,
-            // shape: StadiumBorder(),
-            // elevation: 5,
-            ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: darkBrown),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: brown,
-        unselectedItemColor: grey,
-        showUnselectedLabels: true,
-        showSelectedLabels: true,
-        backgroundColor: Color(0xFFF8F7FA),
-        unselectedIconTheme: IconThemeData(color: grey),
-        elevation: 0,
-      ));
+      errorBorder:
+          OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+          // minimumSize: const Size.fromHeight(50),
+          // textStyle: TextStyle( color: black ),
+          // backgroundColor: lightBrown,
+          // shape: StadiumBorder(),
+          // elevation: 5,
+          ),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: brown,
+      unselectedItemColor: grey,
+      showUnselectedLabels: true,
+      showSelectedLabels: true,
+      backgroundColor: Color(0xFFF8F7FA),
+      unselectedIconTheme: IconThemeData(size: 30),
+      selectedIconTheme: IconThemeData(size: 30),
+      elevation: 0,
+    ),
+  );
 }

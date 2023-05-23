@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class MyTextFormField extends StatelessWidget {
@@ -16,8 +15,8 @@ class MyTextFormField extends StatelessWidget {
     this.labelText,
     this.icon,
     this.keyboardType,
-    this.obscureText, 
-    this.validator, 
+    this.obscureText,
+    this.validator,
     this.borderRadius = 10,
   });
 
@@ -32,7 +31,7 @@ class MyTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: icon != null ? Icon(icon) : null,
-        enabledBorder : OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         ),
         focusedBorder: OutlineInputBorder(
