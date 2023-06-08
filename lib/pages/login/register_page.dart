@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tacafe/pages/pages.dart';
-import 'package:tacafe/services/services.dart';
 import 'package:tacafe/widgets/widgets.dart';
 import 'package:tacafe/theme/app_theme.dart';
 
@@ -48,26 +47,24 @@ class _BodyState extends State<_Body> {
     } else {
       //try to sign up
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
-        );
-
-        // Add user address
-        await FirebaseFirestore.instance.collection('users').add({
-          'email': emailController.text.trim(),
-          'name': nameController.text.trim(),
-          'address': addressController.text.trim(),
+        )
+            .then((result) {
+          FirebaseDatabase.instance.ref("users/${result.user!.uid}").set({
+            'email': emailController.text.trim(),
+            'name': nameController.text.trim(),
+            'address': addressController.text.trim(),
+            "cart": {}
+          });
+        }).then((value) {
+          Navigator.pop(context);
+          //Go to home page
+          selectedIndex = 0;
+          Navigator.pushNamed(context, '/');
         });
-
-        Navigator.pop(context);
-        //Go to home page
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
-        );
       } on FirebaseAuthException catch (e) {
         Navigator.pop(context);
         switch (e.code) {
@@ -103,7 +100,7 @@ class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 60, top: 90),
+      padding: const EdgeInsets.only(left: 40, right: 40, bottom: 70, top: 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,31 +121,31 @@ class _BodyState extends State<_Body> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                MyTextFormField(
+                MyTextField(
                   controller: emailController,
                   validator: MyTextFormValidators.emailValidator,
                   labelText: 'Email',
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
-                MyTextFormField(
+                MyTextField(
                   controller: nameController,
-                  validator: MyTextFormValidators.basicValidator,
+                  validator: MyTextFormValidators.stringValidator,
                   labelText: 'Name',
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
-                MyTextFormField(
+                MyTextField(
                   controller: addressController,
-                  validator: MyTextFormValidators.basicValidator,
+                  validator: MyTextFormValidators.addressValidator,
                   labelText: 'Address',
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
-                MyTextFormField(
+                MyTextField(
                   controller: passwordController,
                   validator: MyTextFormValidators.passwordValidator,
                   labelText: 'Password',
@@ -156,9 +153,9 @@ class _BodyState extends State<_Body> {
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
-                MyTextFormField(
+                MyTextField(
                   controller: confirmPasswordController,
                   validator: (value) {
                     if (value!.isEmpty) {

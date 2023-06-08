@@ -24,7 +24,7 @@ class MyIconButton extends StatelessWidget {
       height: size,
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: backgroundColor.withOpacity(0.2),
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(size / 2),
       ),
       child: IconButton(

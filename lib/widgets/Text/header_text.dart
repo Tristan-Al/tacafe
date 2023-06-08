@@ -9,7 +9,7 @@ class HeaderText extends StatelessWidget {
   const HeaderText({
     super.key,
     required this.text,
-    this.color = AppTheme.black, 
+    this.color = AppTheme.black,
     this.fontSize = 35,
   });
 

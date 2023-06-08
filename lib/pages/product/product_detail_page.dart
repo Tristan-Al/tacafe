@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tacafe/models/models.dart';
+import 'package:tacafe/pages/pages.dart';
+import 'package:tacafe/services/services.dart';
 import 'package:tacafe/theme/app_theme.dart';
-import 'package:tacafe/widgets/Buttons/my_icon_button.dart';
 import 'package:tacafe/widgets/widgets.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -8,10 +10,14 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Product product =
+        ModalRoute.of(context)!.settings.arguments as Product;
+    print('PRODUCT DETAIL: $product');
+
     double imgHeight = MediaQuery.of(context).size.height / 2.2;
     return Scaffold(
       backgroundColor: AppTheme.white,
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: MediaQuery.of(context).size.height,
         child: Stack(
@@ -20,12 +26,14 @@ class ProductDetailPage extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 height: imgHeight,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                        'https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1500w,f_auto,q_auto:best/newscms/2019_33/2203981/171026-better-coffee-boost-se-329p.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+                decoration: BoxDecoration(
+                  image: product.image == null
+                      ? const DecorationImage(
+                          image: AssetImage('assets/no-image.jpg'),
+                          fit: BoxFit.cover)
+                      : DecorationImage(
+                          image: NetworkImage(product.image!),
+                          fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -34,7 +42,9 @@ class ProductDetailPage extends StatelessWidget {
               left: 10,
               child: MyIconButton(
                 icon: Icons.arrow_back_ios_new_rounded,
-                onPressed: () => {Navigator.pop(context)},
+                iconColor: AppTheme.black.withOpacity(.5),
+                backgroundColor: AppTheme.white.withOpacity(.7),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
             Positioned(
@@ -55,8 +65,8 @@ class ProductDetailPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const LightText(
-                      text: 'Cappuccino',
+                    LightText(
+                      text: product.name,
                       color: AppTheme.white,
                       fontSize: 25,
                     ),
@@ -65,6 +75,7 @@ class ProductDetailPage extends StatelessWidget {
                       backgroundColor: AppTheme.brown,
                       textColor: AppTheme.white,
                       borderColor: AppTheme.brown,
+                      onTap: () {},
                     ),
                   ],
                 ),
@@ -84,56 +95,60 @@ class ProductDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HeaderText(
-                      text: 'Coffe Size',
-                      color: AppTheme.black,
-                      fontSize: 22,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyContainer(
-                          text: 'Small',
-                          backgroundColor: AppTheme.brown,
-                          borderColor: AppTheme.brown,
-                          textColor: AppTheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        MyContainer(
-                          text: 'Medium',
-                          borderColor: AppTheme.brown,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        MyContainer(
-                          text: 'Large',
-                          borderColor: AppTheme.brown,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                        ),
-                      ],
-                    ),
+                    // const HeaderText(
+                    //   text: 'Coffe Size',
+                    //   color: AppTheme.black,
+                    //   fontSize: 22,
+                    // ),
+                    // const SizedBox(height: 10),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     MyContainer(
+                    //       text: 'Small',
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.grey,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     MyContainer(
+                    //       text: 'Medium',
+                    //       backgroundColor: AppTheme.grey,
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.white,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     MyContainer(
+                    //       text: 'Large',
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.grey,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 15),
-                    HeaderText(
+                    const HeaderText(
                       text: 'About',
                       color: AppTheme.black,
                       fontSize: 22,
                     ),
                     const SizedBox(height: 10),
                     LightText(
-                      text:
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id ipsum vivamus velit lorem amet. Tincidunt cras volutpat aliquam porttitor molestie. Netus neque, habitasse id vulputate proin cras. Neque, vel duis sit vel pellentesque tempor. A commodo arcu tortor arcu, elit. ',
+                      text: product.description,
                       fontSize: 15,
                       textAlign: TextAlign.start,
                       color: AppTheme.darkBrown,
@@ -156,21 +171,45 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        LightText(
+                      children: [
+                        const LightText(
                           text: 'Add to Cart',
                           fontSize: 25,
                           color: AppTheme.white,
                         ),
                         LightText(
-                          text: '|    3 \$',
+                          text: '|    ${product.price} \$',
                           fontSize: 25,
                           color: AppTheme.white,
                         ),
                       ],
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    ProductService.incrementProductToCart(product.id!);
+
+                    final snackBar = SnackBar(
+                      content: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Product added to cart!'),
+                      ),
+                      duration: const Duration(milliseconds: 2000),
+                      action: SnackBarAction(
+                        label: 'Go to cart',
+                        onPressed: () {
+                          selectedIndex = 1;
+                          //Go to home page
+                          Navigator.pushNamed(context, '/');
+                        },
+                      ),
+                    );
+
+                    //Go to home page
+                    Navigator.pushNamed(context, '/');
+                    // Find the ScaffoldMessenger in the widget tree
+                    // and use it to show a SnackBar.
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
                 ))
           ],
         ),

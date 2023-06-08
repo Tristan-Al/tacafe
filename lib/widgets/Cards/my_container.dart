@@ -9,6 +9,7 @@ class MyContainer extends StatelessWidget {
   final Color borderColor;
   final Color textColor;
   final double fontSize;
+  final Function()? onTap;
 
   MyContainer({
     super.key,
@@ -18,22 +19,26 @@ class MyContainer extends StatelessWidget {
     this.borderColor = AppTheme.white,
     this.textColor = AppTheme.brown,
     this.fontSize = 13,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        border: Border.all(color: borderColor, width: 1.5),
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
-        color: backgroundColor,
+    return GestureDetector(
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          border: Border.all(color: borderColor, width: 1.5),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          color: backgroundColor,
+        ),
+        child: HeaderText(
+          text: text,
+          fontSize: fontSize,
+          color: textColor,
+        ),
       ),
-      child: HeaderText(
-        text: text,
-        fontSize: fontSize,
-        color: textColor,
-      ),
+      onTap: onTap,
     );
   }
 }

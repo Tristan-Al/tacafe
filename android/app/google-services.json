@@ -1,20 +1,29 @@
 {
   "project_info": {
     "project_number": "257388023831",
+    "firebase_url": "https://tacafe-67178-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "tacafe-67178",
     "storage_bucket": "tacafe-67178.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:257388023831:android:030e71a335ec583a7c8c52",
+        "mobilesdk_app_id": "1:257388023831:android:9afdc5e99f275e627c8c52",
         "android_client_info": {
           "package_name": "com.example.tacafe"
         }
       },
       "oauth_client": [
         {
-          "client_id": "257388023831-0hihqjn4e2bdc9c22mt8g2ufdl1kf3hf.apps.googleusercontent.com",
+          "client_id": "257388023831-4548299759jmv8lkhas5r19cq72f1uql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tacafe",
+            "certificate_hash": "7d1746862a43d2c1706b26333e03c569649e4028"
+          }
+        },
+        {
+          "client_id": "257388023831-ul0ibcrfchbdl1vd4iigsigg2ppu1chb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +38,13 @@
             {
               "client_id": "257388023831-0hihqjn4e2bdc9c22mt8g2ufdl1kf3hf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "257388023831-ag9ubephr2rfhqgrc4mh2gb1ha8cvpo6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tacafe"
+              }
             }
           ]
         }
