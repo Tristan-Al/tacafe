@@ -140,7 +140,7 @@ class _BodyState extends State<_Body> {
                 Form(
                     key: myFormKey,
                     child: Column(children: [
-                      MyTextFormField(
+                      MyTextField(
                         controller: emailController,
                         validator: MyTextFormValidators.emailValidator,
                         labelText: 'Email',

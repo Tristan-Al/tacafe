@@ -31,27 +31,29 @@ class _BodyState extends State<_Body> {
     FocusScope.of(context).unfocus();
 
     // show loading circle
-    showDialog(
-        context: context,
-        builder: ((context) => const Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.lightBrown,
-              ),
-            )));
+    // showDialog(
+    //     context: context,
+    //     builder: ((context) => const Center(
+    //           child: CircularProgressIndicator(
+    //             color: AppTheme.lightBrown,
+    //           ),
+    //         )));
 
     if (!myFormKey.currentState!.validate()) {
       //removes loading circle
-      Navigator.pop(context);
+      // Navigator.pop(context);
     } else {
       //try to sign in
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
-        Navigator.pop(context);
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: emailController.text,
+              password: passwordController.text,
+            )
+            .then((value) => selectedIndex = 0);
+        // Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         switch (e.code) {
           case 'user-not-found':
             _showErrorMessage('There is no user registered with this email');
@@ -106,7 +108,7 @@ class _BodyState extends State<_Body> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                MyTextFormField(
+                MyTextField(
                   controller: emailController,
                   validator: MyTextFormValidators.emailValidator,
                   labelText: 'Email',
@@ -114,7 +116,7 @@ class _BodyState extends State<_Body> {
                 const SizedBox(
                   height: 20,
                 ),
-                MyTextFormField(
+                MyTextField(
                   controller: passwordController,
                   validator: MyTextFormValidators.passwordValidator,
                   labelText: 'Password',
@@ -131,10 +133,7 @@ class _BodyState extends State<_Body> {
                     color: AppTheme.darkBrown,
                   ),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return ForgotPasswordPage();
-                    }));
+                    Navigator.pushNamed(context, '/forgot_password');
                   },
                 ),
               ],
@@ -184,10 +183,7 @@ class _BodyState extends State<_Body> {
               ),
               SquareCard(
                 imagePath: 'assets/apple.png',
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return const ErrorPage();
-                })),
+                onTap: () => Navigator.pushNamed(context, '/error'),
               ),
             ],
           ),
@@ -203,10 +199,7 @@ class _BodyState extends State<_Body> {
                   style: TextStyle(
                       color: AppTheme.darkBrown, fontWeight: FontWeight.bold),
                 ),
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return RegisterPage();
-                })),
+                onTap: () => Navigator.pushNamed(context, '/register'),
               )
             ],
           )

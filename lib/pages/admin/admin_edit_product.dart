@@ -1,35 +1,38 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ffi';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tacafe/models/models.dart';
 import 'package:tacafe/pages/pages.dart';
-import 'package:tacafe/services/services.dart';
 import 'package:tacafe/theme/app_theme.dart';
 import 'package:tacafe/widgets/widgets.dart';
 
-class EditProfilePage extends StatelessWidget {
-  const EditProfilePage({super.key});
+class AdminEditProductPage extends StatelessWidget {
+  const AdminEditProductPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Product product =
+        ModalRoute.of(context)!.settings.arguments as Product;
+
     final myFormKey = GlobalKey<FormState>();
 
     final nameController = TextEditingController();
-    final phoneController = TextEditingController();
-    final addressController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final categoryController = TextEditingController();
+    final imageController = TextEditingController();
+    final priceController = TextEditingController();
+    final stockController = TextEditingController();
 
-    final userService = Provider.of<UserService>(context);
+    nameController.text = product.name;
+    descriptionController.text = product.description;
+    categoryController.text = product.category;
+    imageController.text = product.image ?? '';
+    priceController.text = product.price.toString();
+    stockController.text = product.stock.toString();
 
-    if (userService.isLoading) return const LoadingPage();
-
-    MyUser user = UserService.getUser(FirebaseAuth.instance.currentUser!.uid);
-
-    nameController.text = user.name ?? '';
-    phoneController.text = user.phone ?? '';
-    addressController.text = user.address ?? '';
     return Scaffold(
-      appBar: DefaultAppbar(text: 'Account Info'),
+      appBar: DefaultAppbar(text: 'Edit product'),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -39,9 +42,9 @@ class EditProfilePage extends StatelessWidget {
                 SizedBox(
                   width: 200,
                   height: 200,
-                  child: user.image != null
+                  child: product.image != null
                       ? CircleAvatar(
-                          backgroundImage: NetworkImage(user.image!),
+                          backgroundImage: NetworkImage(product.image!),
                           backgroundColor: Colors.grey[300],
                           child: Align(
                             alignment: Alignment.bottomRight,
@@ -76,34 +79,52 @@ class EditProfilePage extends StatelessWidget {
                 Form(
                   key: myFormKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       MyTextFormField(
                         controller: nameController,
                         labelText: 'Name',
+                        validator: MyTextFormValidators.stringValidator,
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       MyTextFormField(
-                        controller: phoneController,
-                        labelText: 'Phone',
+                        controller: descriptionController,
+                        labelText: 'Description',
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      MyTextFormField(
+                        controller: imageController,
+                        labelText: 'Image URL',
+                        keyboardType: TextInputType.url,
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      MyTextFormField(
+                        controller: categoryController,
+                        labelText: 'Category',
+                        validator: MyTextFormValidators.stringValidator,
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      MyTextFormField(
+                        controller: priceController,
+                        labelText: 'Price',
+                        validator: MyTextFormValidators.doubleValidator,
                         keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value!.length < 9) {
-                            return 'This doen\'t look like a phone number.';
-                          } else if (value.length > 9) {
-                            return 'This doesn\'t look like a phone number.';
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(
                         height: 15,
                       ),
                       MyTextFormField(
-                        controller: addressController,
-                        labelText: 'Address',
+                        controller: stockController,
+                        labelText: 'Stock',
+                        validator: MyTextFormValidators.numberValidator,
+                        keyboardType: TextInputType.number,
                       ),
                     ],
                   ),
@@ -113,33 +134,23 @@ class EditProfilePage extends StatelessWidget {
                 ),
                 MyElevatedButton(
                   onPressed: () {
-                    // show loading circle
-                    showDialog(
-                        context: context,
-                        builder: ((context) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppTheme.lightBrown,
-                              ),
-                            )));
-                    if (!myFormKey.currentState!.validate()) {
-                      //removes loading circle
-                      Navigator.pop(context);
-                    } else {
-                      user.name = nameController.text.trim();
-                      user.phone = phoneController.text.trim();
-                      user.address = addressController.text.trim();
+                    if (myFormKey.currentState!.validate()) {
+                      product.name = nameController.text.trim();
+                      product.description = descriptionController.text.trim();
+                      product.image = imageController.text.trim();
+                      product.category = categoryController.text.trim();
+                      product.price = double.parse(priceController.text.trim());
+                      product.stock = int.parse(stockController.text.trim());
 
-                      FirebaseDatabase.instance.ref("users/${user.id}").update({
-                        'name': user.name,
-                        'phone': user.phone,
-                        'address': user.address,
-                      });
+                      FirebaseDatabase.instance
+                          .ref("products/${product.id}")
+                          .update(product.toMap());
 
                       Navigator.pop(context);
                       final snackBar = SnackBar(
                         content: const Padding(
                           padding: EdgeInsets.all(10),
-                          child: Text('User updated!'),
+                          child: Text('Product updated!'),
                         ),
                         duration: const Duration(milliseconds: 2000),
                         action: SnackBarAction(
@@ -169,28 +180,6 @@ class EditProfilePage extends StatelessWidget {
           ),
         ),
       ),
-
-      // child: FutureBuilder(
-      //   future: UserService.getUser(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasError) {
-      //       return const Center(
-      //         child: HeaderText(text: 'Something went wrong'),
-      //       );
-      //     }
-      //     if (snapshot.connectionState == ConnectionState.done) {
-      //       final MyUser user = MyUser.fromJson(
-      //           snapshot.data!.data() as Map<String, dynamic?>);
-      //       nameController.text = user.name;
-      //       phoneController.text = user.phone ?? '';
-      //       addressController.text = user.address;
-
-      //       return
-      //     }
-
-      //     return const Center(child: CircularProgressIndicator());
-      //   },
-      // ),
     );
   }
 }

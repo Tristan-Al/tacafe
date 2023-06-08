@@ -1,20 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tacafe/models/models.dart';
 import 'package:tacafe/pages/pages.dart';
 import 'package:tacafe/services/services.dart';
 import 'package:tacafe/theme/app_theme.dart';
-import 'package:tacafe/widgets/Buttons/my_icon_button.dart';
 import 'package:tacafe/widgets/widgets.dart';
 
 class ProductDetailPage extends StatelessWidget {
-  final Product product;
-  const ProductDetailPage({super.key, required this.product});
+  const ProductDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final Product product =
+        ModalRoute.of(context)!.settings.arguments as Product;
+    print('PRODUCT DETAIL: $product');
+
     double imgHeight = MediaQuery.of(context).size.height / 2.2;
     return Scaffold(
       backgroundColor: AppTheme.white,
@@ -43,7 +42,9 @@ class ProductDetailPage extends StatelessWidget {
               left: 10,
               child: MyIconButton(
                 icon: Icons.arrow_back_ios_new_rounded,
-                onPressed: () => {Navigator.pop(context)},
+                iconColor: AppTheme.black.withOpacity(.5),
+                backgroundColor: AppTheme.white.withOpacity(.7),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
             Positioned(
@@ -94,49 +95,51 @@ class ProductDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const HeaderText(
-                      text: 'Coffe Size',
-                      color: AppTheme.black,
-                      fontSize: 22,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyContainer(
-                          text: 'Small',
-                          backgroundColor: AppTheme.brown,
-                          borderColor: AppTheme.brown,
-                          textColor: AppTheme.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                          onTap: () {},
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        MyContainer(
-                          text: 'Medium',
-                          borderColor: AppTheme.brown,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                          onTap: () {},
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        MyContainer(
-                          text: 'Large',
-                          borderColor: AppTheme.brown,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
-                          fontSize: 15,
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
+                    // const HeaderText(
+                    //   text: 'Coffe Size',
+                    //   color: AppTheme.black,
+                    //   fontSize: 22,
+                    // ),
+                    // const SizedBox(height: 10),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     MyContainer(
+                    //       text: 'Small',
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.grey,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     MyContainer(
+                    //       text: 'Medium',
+                    //       backgroundColor: AppTheme.grey,
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.white,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //     const SizedBox(
+                    //       width: 5,
+                    //     ),
+                    //     MyContainer(
+                    //       text: 'Large',
+                    //       borderColor: AppTheme.grey,
+                    //       textColor: AppTheme.grey,
+                    //       padding: const EdgeInsets.symmetric(
+                    //           horizontal: 25, vertical: 10),
+                    //       fontSize: 15,
+                    //       onTap: () {},
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(height: 15),
                     const HeaderText(
                       text: 'About',
@@ -183,59 +186,29 @@ class ProductDetailPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // show loading circle
-                    showDialog(
-                        context: context,
-                        builder: ((context) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppTheme.lightBrown,
-                              ),
-                            )));
-                    ProductService.incrementProductToCard(product.id!)
-                        .then((value) {
-                      Navigator.pop(context);
+                    ProductService.incrementProductToCart(product.id!);
 
-                      final snackBar = SnackBar(
-                        content: const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Product added to cart!'),
-                        ),
-                        duration: const Duration(milliseconds: 2000),
-                        action: SnackBarAction(
-                          label: 'Go to cart',
-                          onPressed: () {
-                            selectedIndex = 2;
-                            //Go to home page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const MainPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      );
+                    final snackBar = SnackBar(
+                      content: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Product added to cart!'),
+                      ),
+                      duration: const Duration(milliseconds: 2000),
+                      action: SnackBarAction(
+                        label: 'Go to cart',
+                        onPressed: () {
+                          selectedIndex = 1;
+                          //Go to home page
+                          Navigator.pushNamed(context, '/');
+                        },
+                      ),
+                    );
 
-//Go to home page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MainPage(),
-                        ),
-                      );
-                      // Find the ScaffoldMessenger in the widget tree
-                      // and use it to show a SnackBar.
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    }).onError((error, stackTrace) {
-                      Navigator.pop(context);
-                      // show loading circle
-                      showDialog(
-                          context: context,
-                          builder: ((context) => Center(
-                                  child: Center(
-                                child: LightText(text: error.toString()),
-                              ))));
-                    });
+                    //Go to home page
+                    Navigator.pushNamed(context, '/');
+                    // Find the ScaffoldMessenger in the widget tree
+                    // and use it to show a SnackBar.
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
                 ))
           ],

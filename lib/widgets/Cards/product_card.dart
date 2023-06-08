@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tacafe/models/models.dart';
-import 'package:tacafe/pages/pages.dart';
 import 'package:tacafe/theme/app_theme.dart';
 import 'package:tacafe/widgets/widgets.dart';
 
@@ -12,9 +11,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ProductDetailPage(product: product);
-      })),
+          Navigator.pushNamed(context, '/product_detail', arguments: product),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) - 25,
         height: 230,
@@ -33,66 +30,62 @@ class ProductCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                image: product.image == null
-                    ? const DecorationImage(
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                height: 120,
+                child: product.image == null
+                    ? const Image(
                         image: AssetImage('assets/no-image.jpg'),
-                        fit: BoxFit.cover)
-                    : DecorationImage(
-                        image: NetworkImage(product.image!), fit: BoxFit.cover),
+                        fit: BoxFit.cover,
+                      )
+                    : FadeInImage(
+                        image: NetworkImage(product.image!),
+                        fit: BoxFit.cover,
+                        placeholder: const AssetImage('assets/loading.gif'),
+                      ),
               ),
-            ),
-            const SizedBox(
-              height: 5,
             ),
             HeaderText(
               text: product.name,
               fontSize: 15,
               color: AppTheme.darkBrown,
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                MyContainer(
-                  text: 'S',
-                  backgroundColor: AppTheme.brown,
-                  borderColor: AppTheme.brown,
-                  textColor: AppTheme.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-                  onTap: () {},
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                MyContainer(
-                  text: 'M',
-                  borderColor: AppTheme.brown,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-                  onTap: () {},
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                MyContainer(
-                  text: 'L',
-                  borderColor: AppTheme.brown,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-                  onTap: () {},
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 5,
-            ),
+            // Row(
+            //   children: [
+            //     MyContainer(
+            //       text: 'S',
+            //       backgroundColor: AppTheme.brown,
+            //       borderColor: AppTheme.brown,
+            //       textColor: AppTheme.white,
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+            //       onTap: () {},
+            //     ),
+            //     const SizedBox(
+            //       width: 5,
+            //     ),
+            //     MyContainer(
+            //       text: 'M',
+            //       borderColor: AppTheme.brown,
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+            //       onTap: () {},
+            //     ),
+            //     const SizedBox(
+            //       width: 5,
+            //     ),
+            //     MyContainer(
+            //       text: 'L',
+            //       borderColor: AppTheme.brown,
+            //       padding:
+            //           const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+            //       onTap: () {},
+            //     ),
+            //   ],
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

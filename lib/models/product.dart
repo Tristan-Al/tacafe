@@ -1,39 +1,48 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class Product {
   String? id;
-  String name;
+  String category;
   String description;
   String? image;
-  num price;
+  String name;
+  double price;
   int stock;
 
   Product({
     this.id,
-    required this.name,
+    required this.category,
     required this.description,
     this.image,
+    required this.name,
     required this.price,
     required this.stock,
   });
 
-  Product.fromJson(Map<String, dynamic?> json)
-      : this(
-          name: json['name'] as String,
-          description: json['description'] as String,
-          image: json['image'] as String,
-          price: json['price'] as num,
-          stock: json['stock'] as int,
-        );
+  factory Product.fromJson(String str) => Product.fromMap(json.decode(str));
 
-  Map<String, Object> toJson() {
-    return {
-      'id': id!,
-      'name': name,
-      'description': description,
-      'image': image!,
-      'price': price,
-      'stock': stock,
-    };
+  String toJson() => json.encode(toMap());
+
+  factory Product.fromMap(Map<String, dynamic> json) => Product(
+        category: json["category"],
+        description: json["description"],
+        image: json["image"],
+        name: json["name"],
+        price: json["price"]?.toDouble(),
+        stock: json["stock"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "category": category,
+        "description": description,
+        "image": image,
+        "name": name,
+        "price": price,
+        "stock": stock,
+      };
+
+  @override
+  String toString() {
+    return 'Product{ id: $id, name: $name, ';
   }
 }

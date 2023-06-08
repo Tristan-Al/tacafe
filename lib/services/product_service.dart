@@ -1,82 +1,89 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tacafe/models/models.dart';
+import 'package:tacafe/models/product.dart';
+import 'package:http/http.dart' as http;
 
-class ProductService {
-  static FirebaseFirestore db = FirebaseFirestore.instance;
+class ProductService extends ChangeNotifier {
+  final String _baseURL =
+      'tacafe-67178-default-rtdb.europe-west1.firebasedatabase.app';
+  static List<Product> products = [];
+  bool isLoading = true;
 
-  static Future<List> getProducts() async {
-    List<Product> products = [];
+  ProductService() {
+    loadProducts();
+  }
 
-    QuerySnapshot querySnapshot = await db.collection("products").get();
+  Future loadProducts() async {
+    isLoading = true;
+    notifyListeners();
 
-    querySnapshot.docs.forEach((document) {
-      Map<String, dynamic> productJson =
-          document.data() as Map<String, dynamic>;
+    final url = Uri.https(_baseURL, 'products.json');
+    final resp = await http.get(url);
 
-      Product product = Product.fromJson(productJson);
+    final Map<String, dynamic> productsMap = json.decode(resp.body);
 
-      product.id = document.id;
-
-      products.add(product);
+    productsMap.forEach((key, value) {
+      final temProduct = Product.fromMap(value);
+      temProduct.id = key;
+      products.add(temProduct);
+      // print(temProduct);
     });
 
+    isLoading = false;
+    notifyListeners();
+
+    print('products loaded');
     return products;
   }
 
-  static Future<List> getProductswithCategory(String category) async {
-    List<Product> products = [];
-
-    QuerySnapshot querySnapshot = await db
-        .collection("products")
-        .where('category', isEqualTo: category)
-        .get();
-
-    querySnapshot.docs.forEach((document) {
-      Map<String, dynamic> productJson =
-          document.data() as Map<String, dynamic>;
-
-      Product product = Product.fromJson(productJson);
-
-      product.id = document.id;
-
-      products.add(product);
-    });
-
-    return products;
+  static List getCategories(List<Product> listProducts) {
+    Set categories = {};
+    for (Product element in listProducts) {
+      categories.add(element.category);
+    }
+    return categories.toList();
   }
 
-  static Future<List> getCategories() async {
-    List<String> categories = [];
-
-    QuerySnapshot querySnapshot = await db.collection('categories').get();
-
-    querySnapshot.docs.forEach((document) {
-      Map<String, dynamic> categoryJson =
-          document.data() as Map<String, dynamic>;
-
-      categories.add(categoryJson['name']);
-    });
-
-    return categories;
+  static List<Product> getProductsOfCategory(
+      List<Product> listProducts, String category) {
+    return listProducts
+        .where((element) => element.category == category)
+        .toList();
   }
 
-  static Future incrementProductToCard(String productId) async {
-    db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'cart.$productId': FieldValue.increment(1),
+  static Product getProduct(String productId) {
+    // FirebaseDatabase.instance.ref('/products')
+    return products.where((element) => element.id == productId).isNotEmpty
+        ? products.where((element) => element.id == productId).first
+        : Product(
+            category: '', description: '', name: 'name', price: -1, stock: -1);
+  }
+
+  static incrementProductToCart(String productId) {
+    FirebaseDatabase.instance
+        .ref("users/${FirebaseAuth.instance.currentUser!.uid}")
+        .child('cart')
+        .update({
+      productId: ServerValue.increment(1),
     });
   }
 
-  static Future decrementProductToCard(String productId) async {
-    db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'cart.$productId': FieldValue.increment(-1),
+  static decrementProductToCart(String productId) {
+    FirebaseDatabase.instance
+        .ref("users/${FirebaseAuth.instance.currentUser!.uid}")
+        .child('cart')
+        .update({
+      productId: ServerValue.increment(-1),
     });
   }
 
-  static Future deleteProductToCard(String productId) async {
-    db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'cart.$productId': FieldValue.delete(),
-    });
+  static deleteProductToCard(String productId) {
+    FirebaseDatabase.instance
+        .ref("users/${FirebaseAuth.instance.currentUser!.uid}")
+        .child('cart')
+        .child(productId)
+        .remove();
   }
 }

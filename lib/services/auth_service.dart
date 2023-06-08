@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tacafe/main.dart';
+import 'package:tacafe/pages/home/main_page.dart';
+import 'package:tacafe/services/services.dart';
 
 class AuthService {
   //Google sign in
@@ -18,23 +22,25 @@ class AuthService {
     return await FirebaseAuth.instance
         .signInWithCredential(credential)
         .then((result) {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(result.user!.uid)
-          .get()
-          .then((value) {
-        // If user not exist
-        if (!value.exists) {
-          // Save user to database
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(result.user!.uid)
-              .set({
-            'email': result.user!.email,
-            'cart': {},
-          });
-        }
-      });
+      if (UserService.getUser(result.user!.uid).id == null) {
+        FirebaseDatabase.instance.ref("users/${result.user!.uid}").set({
+          'email': result.user!.email,
+        });
+      }
+      selectedIndex = 0;
+    });
+  }
+
+  // sign user out method
+  static signUserOut(context) {
+    FirebaseAuth.instance.signOut().then((value) {
+      // Restart App:
+      // Remove any route in the stack
+      Navigator.of(context).popUntil((route) => false);
+
+      // Add the first route
+      Navigator.pushNamed(context, '/app_state');
+      selectedIndex = 0;
     });
   }
 }

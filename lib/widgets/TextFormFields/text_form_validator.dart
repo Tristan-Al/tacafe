@@ -1,7 +1,48 @@
 class MyTextFormValidators {
-  static String? Function(String?)? basicValidator = (value) {
+  static String? Function(String?)? numberValidator = (value) {
     if (value!.isEmpty) {
       return 'Field required';
+    }
+    final RegExp nameRegExp = RegExp(r'^[0-9]+$');
+
+    if (!nameRegExp.hasMatch(value)) {
+      return 'Invalid number field';
+    }
+    return null;
+  };
+
+  static String? Function(String?)? doubleValidator = (value) {
+    if (value!.isEmpty) {
+      return 'Field required';
+    }
+    final RegExp nameRegExp = RegExp(r'^[0-9]+(\.[0-9]+)?$');
+
+    if (!nameRegExp.hasMatch(value)) {
+      return 'Invalid double field';
+    }
+    return null;
+  };
+
+  static String? Function(String?)? stringValidator = (value) {
+    if (value!.isEmpty) {
+      return 'Field required';
+    }
+    final RegExp nameRegExp = RegExp(r'^[a-zA-Z\s.,-]+$');
+
+    if (!nameRegExp.hasMatch(value)) {
+      return 'Invalid field';
+    }
+    return null;
+  };
+
+  static String? Function(String?)? addressValidator = (value) {
+    if (value!.isEmpty) {
+      return 'Address required';
+    }
+    final RegExp nameRegExp = RegExp(r'^[a-zA-Z0-9\s.,#-]+$');
+
+    if (!nameRegExp.hasMatch(value)) {
+      return 'Invalid address';
     }
     return null;
   };

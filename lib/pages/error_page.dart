@@ -8,7 +8,7 @@ class ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const HFTemplate( body: _Body() );
+    return const HFTemplate(body: _Body());
   }
 }
 
@@ -17,7 +17,6 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.only(left: 40, right: 40, bottom: 80, top: 80),
@@ -26,21 +25,28 @@ class _Body extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           const SizedBox(
-            width: 180,
-            height: 180,
-            child: Image(image: AssetImage('assets/maintenance.png'))
-          ),
+              width: 180,
+              height: 180,
+              child: Image(image: AssetImage('assets/maintenance.png'))),
           Column(
             children: [
-              HeaderText(text: 'Oops', fontSize: 30,),
-              LightText(text: 'This page is unde maintenance. We\'re working on it!',),
+              HeaderText(
+                text: 'Oops',
+                fontSize: 30,
+              ),
+              LightText(
+                text: 'This page is unde maintenance. We\'re working on it!',
+              ),
             ],
           ),
           MyElevatedButton(
             onPressed: () => {Navigator.pop(context)},
-            width: double.infinity, 
+            width: double.infinity,
             borderRadius: BorderRadius.circular(10),
-            child: const LightText(text: 'Back to home page', color: AppTheme.white,),
+            child: const LightText(
+              text: 'Back to home page',
+              color: AppTheme.white,
+            ),
           ),
         ],
       ),

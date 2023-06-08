@@ -15,7 +15,7 @@ int selectedIndex =
 class _MainPageState extends State<MainPage> {
   static final List<Widget> _pages = <Widget>[
     HomePage(),
-    FavouritePage(),
+    // FavouritePage(),
     CartPage(),
     ProfilePage(),
   ];
@@ -53,10 +53,10 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(Icons.home_rounded),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_border_rounded),
-              label: 'Favourite',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.favorite_border_rounded),
+            //   label: 'Favourite',
+            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add_shopping_cart_rounded),
               label: 'Cart',
